@@ -37,6 +37,9 @@ const (
 	MUL // *
 	DIV // /
 
+	BWAND // /
+	BWOR // /
+
 	AND // AND
 	OR  // OR
 
@@ -155,6 +158,9 @@ var tokens = [...]string{
 	SUB: "-",
 	MUL: "*",
 	DIV: "/",
+
+	BWAND: "/",
+	BWOR: "/",
 
 	AND: "AND",
 	OR:  "OR",
@@ -276,15 +282,15 @@ func (tok Token) String() string {
 // Precedence returns the operator precedence of the binary operator token.
 func (tok Token) Precedence() int {
 	switch tok {
-	case OR:
+        case OR:
 		return 1
-	case AND:
+        case AND:
 		return 2
 	case EQ, NEQ, EQREGEX, NEQREGEX, LT, LTE, GT, GTE:
 		return 3
 	case ADD, SUB:
 		return 4
-	case MUL, DIV:
+	case MUL, DIV, BWAND, BWOR:
 		return 5
 	}
 	return 0

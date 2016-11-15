@@ -4102,6 +4102,16 @@ func evalBinaryExpr(expr *BinaryExpr, m map[string]interface{}) interface{} {
 				return float64(0)
 			}
 			return lhs / rhs
+		case BWAND:
+			if !ok {
+				return nil
+			}
+                        return float64(int64(lhs) & int64(rhs))
+		case BWOR:
+			if !ok {
+				return nil
+			}
+                        return float64(int64(lhs) | int64(rhs))
 		}
 	case int64:
 		// Try as a float64 to see if a float cast is required.
@@ -4133,6 +4143,10 @@ func evalBinaryExpr(expr *BinaryExpr, m map[string]interface{}) interface{} {
 					return float64(0)
 				}
 				return lhs / rhs
+			case BWAND:
+                                return float64(int64(lhs) & int64(rhs))
+			case BWOR:
+                                return float64(int64(lhs) | int64(rhs))
 			}
 		} else {
 			rhs, ok := rhs.(int64)
@@ -4171,6 +4185,16 @@ func evalBinaryExpr(expr *BinaryExpr, m map[string]interface{}) interface{} {
 					return float64(0)
 				}
 				return lhs / rhs
+			case BWAND:
+				if !ok {
+					return nil
+				}
+				return float64(lhs & rhs)
+			case BWOR:
+				if !ok {
+					return nil
+				}
+				return float64(lhs | rhs)
 			}
 		}
 	case string:
@@ -4331,6 +4355,10 @@ func reduceBinaryExprDurationLHS(op Token, lhs *DurationLiteral, rhs Expr) Expr 
 				return &DurationLiteral{Val: 0}
 			}
 			return &DurationLiteral{Val: lhs.Val / time.Duration(rhs.Val)}
+		case BWAND:
+			return &DurationLiteral{Val: lhs.Val & time.Duration(rhs.Val)}
+		case BWOR:
+			return &DurationLiteral{Val: lhs.Val | time.Duration(rhs.Val)}
 		}
 	case *IntegerLiteral:
 		switch op {
@@ -4341,6 +4369,10 @@ func reduceBinaryExprDurationLHS(op Token, lhs *DurationLiteral, rhs Expr) Expr 
 				return &DurationLiteral{Val: 0}
 			}
 			return &DurationLiteral{Val: lhs.Val / time.Duration(rhs.Val)}
+		case BWAND:
+			return &DurationLiteral{Val: lhs.Val & time.Duration(rhs.Val)}
+		case BWOR:
+			return &DurationLiteral{Val: lhs.Val | time.Duration(rhs.Val)}
 		}
 	case *TimeLiteral:
 		switch op {
@@ -4382,6 +4414,10 @@ func reduceBinaryExprIntegerLHS(op Token, lhs *IntegerLiteral, rhs Expr) Expr {
 				return &NumberLiteral{Val: 0}
 			}
 			return &NumberLiteral{Val: float64(lhs.Val) / float64(rhs.Val)}
+		case BWAND:
+			return &IntegerLiteral{Val: lhs.Val & rhs.Val}
+		case BWOR:
+			return &IntegerLiteral{Val: lhs.Val | rhs.Val}
 		case EQ:
 			return &BooleanLiteral{Val: lhs.Val == rhs.Val}
 		case NEQ:
@@ -4448,6 +4484,10 @@ func reduceBinaryExprNumberLHS(op Token, lhs *NumberLiteral, rhs Expr) Expr {
 				return &NumberLiteral{Val: 0}
 			}
 			return &NumberLiteral{Val: lhs.Val / rhs.Val}
+		case BWAND:
+			return &NumberLiteral{Val: float64(int64(lhs.Val) & int64(rhs.Val))}
+		case BWOR:
+			return &NumberLiteral{Val: float64(int64(lhs.Val) | int64(rhs.Val))}
 		case EQ:
 			return &BooleanLiteral{Val: lhs.Val == rhs.Val}
 		case NEQ:
@@ -4474,6 +4514,10 @@ func reduceBinaryExprNumberLHS(op Token, lhs *NumberLiteral, rhs Expr) Expr {
 				return &NumberLiteral{Val: 0}
 			}
 			return &NumberLiteral{Val: lhs.Val / float64(rhs.Val)}
+		case BWAND:
+			return &NumberLiteral{Val: float64(int64(lhs.Val) & rhs.Val)}
+		case BWOR:
+			return &NumberLiteral{Val: float64(int64(lhs.Val) | rhs.Val)}
 		case EQ:
 			return &BooleanLiteral{Val: lhs.Val == float64(rhs.Val)}
 		case NEQ:
