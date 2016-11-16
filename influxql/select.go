@@ -996,6 +996,14 @@ func floatBinaryExprFunc(op Token) interface{} {
 			}
 			return lhs / rhs
 		}
+	case BWAND:
+		return func(lhs, rhs float64) float64 {
+			return float64(int64(lhs) & int64(rhs))
+		}
+	case BWOR:
+		return func(lhs, rhs float64) float64 {
+			return float64(int64(lhs) | int64(rhs))
+		}
 	case EQ:
 		return func(lhs, rhs float64) bool { return lhs == rhs }
 	case NEQ:
@@ -1026,6 +1034,14 @@ func integerBinaryExprFunc(op Token) interface{} {
 				return float64(0)
 			}
 			return float64(lhs) / float64(rhs)
+		}
+	case BWAND:
+		return func(lhs, rhs int64) float64 {
+			return float64(lhs & rhs)
+		}
+	case BWOR:
+		return func(lhs, rhs int64) float64 {
+			return float64(lhs | rhs)
 		}
 	case EQ:
 		return func(lhs, rhs int64) bool { return lhs == rhs }
